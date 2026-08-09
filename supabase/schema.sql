@@ -98,3 +98,6 @@ create policy "orders_admin_update" on orders for update using (auth.role() = 'a
 create policy "orders_admin_delete" on orders for delete using (auth.role() = 'authenticated');
 create policy "order_items_admin_read" on order_items for select using (auth.role() = 'authenticated');
 create policy "settings_admin_write" on settings for update using (auth.role() = 'authenticated');
+
+-- Realtime: el dashboard de admin escucha cambios en pedidos al instante
+alter publication supabase_realtime add table orders;
