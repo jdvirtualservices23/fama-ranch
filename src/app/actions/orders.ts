@@ -17,3 +17,12 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
 
   revalidatePath('/admin')
 }
+
+export async function deleteOrder(orderId: string) {
+  await requireAdmin()
+  const supabase = await createClient()
+  const { error } = await supabase.from('orders').delete().eq('id', orderId)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin')
+}

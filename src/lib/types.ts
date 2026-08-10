@@ -53,6 +53,24 @@ export type OrderItem = {
   selection_note: string | null
 }
 
+export type InventoryItem = {
+  id: string
+  name: string
+  unit: string
+  created_at: string
+}
+
+export type MovementType = 'compra' | 'consumo'
+
+export type InventoryMovement = {
+  id: string
+  item_id: string
+  movement_type: MovementType
+  quantity: number
+  note: string | null
+  created_at: string
+}
+
 export type Settings = {
   id: number
   bcv_rate: number

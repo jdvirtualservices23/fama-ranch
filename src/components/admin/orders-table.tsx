@@ -2,9 +2,12 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
+import { deleteOrder } from '@/app/actions/orders'
 import { OrderStatusSelect } from '@/components/admin/order-status-select'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -14,6 +17,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { formatBs, formatUsd, DELIVERY_METHOD_LABELS, PAYMENT_METHOD_LABELS } from '@/lib/format'
+import { Trash2 } from 'lucide-react'
 import type { Order, OrderItem } from '@/lib/types'
 
 const STATUS_BADGE_VARIANT: Record<Order['status'], 'default' | 'secondary' | 'destructive' | 'outline'> = {
@@ -26,9 +30,11 @@ const STATUS_BADGE_VARIANT: Record<Order['status'], 'default' | 'secondary' | 'd
 export function OrdersTable({
   orders,
   itemsByOrder,
+  emptyMessage = 'No hay pedidos en este rango.',
 }: {
   orders: Order[]
   itemsByOrder: Record<string, OrderItem[]>
+  emptyMessage?: string
 }) {
   const router = useRouter()
 
@@ -48,10 +54,20 @@ export function OrdersTable({
     }
   }, [router])
 
+  async function handleDelete(orderId: string) {
+    if (!confirm('¿Eliminar este pedido por completo? Esta acción no se puede deshacer.')) return
+    try {
+      await deleteOrder(orderId)
+      toast.success('Pedido eliminado.')
+    } catch {
+      toast.error('No se pudo eliminar el pedido.')
+    }
+  }
+
   if (orders.length === 0) {
     return (
       <p className="rounded-md border border-dashed border-neutral-800 p-8 text-center text-neutral-500">
-        Todavía no hay pedidos hoy.
+        {emptyMessage}
       </p>
     )
   }
@@ -68,6 +84,7 @@ export function OrdersTable({
             <TableHead>Total</TableHead>
             <TableHead>Hora</TableHead>
             <TableHead>Estado</TableHead>
+            <TableHead className="w-10" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -118,6 +135,16 @@ export function OrdersTable({
                   <Badge variant={STATUS_BADGE_VARIANT[order.status]}>{order.status}</Badge>
                   <OrderStatusSelect orderId={order.id} status={order.status} />
                 </div>
+              </TableCell>
+              <TableCell>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="size-7 text-red-500 hover:text-red-400"
+                  onClick={() => handleDelete(order.id)}
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
               </TableCell>
             </TableRow>
           ))}
