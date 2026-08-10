@@ -174,7 +174,6 @@ export function CheckoutForm({ settings }: { settings: Settings }) {
               <SelectContent>
                 <SelectItem value="pago_movil">Pago Móvil</SelectItem>
                 <SelectItem value="efectivo">Efectivo</SelectItem>
-                <SelectItem value="zelle">Zelle</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -193,21 +192,6 @@ export function CheckoutForm({ settings }: { settings: Settings }) {
               <div className="space-y-2 pt-1">
                 <Label htmlFor="paymentReference">N° de referencia</Label>
                 <Input id="paymentReference" name="paymentReference" required />
-              </div>
-            </div>
-          )}
-
-          {paymentMethod === 'zelle' && (
-            <div className="space-y-3 rounded-md border border-neutral-800 bg-neutral-950 p-3 text-sm">
-              <p className="text-neutral-300">
-                Correo: <span className="font-medium">{settings.zelle_email ?? '—'}</span>
-              </p>
-              <p className="text-neutral-300">
-                Titular: <span className="font-medium">{settings.zelle_name ?? '—'}</span>
-              </p>
-              <div className="space-y-2 pt-1">
-                <Label htmlFor="paymentReference">N° de confirmación (opcional)</Label>
-                <Input id="paymentReference" name="paymentReference" />
               </div>
             </div>
           )}

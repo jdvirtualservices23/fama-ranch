@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/dialog'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { InventoryStockChart } from '@/components/admin/inventory-stock-chart'
 import {
   Table,
   TableBody,
@@ -190,7 +191,14 @@ export function InventoryManager({
             }
           />
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <InventoryStockChart
+            data={items.map((item) => ({
+              name: item.name,
+              stock: stockByItem[item.id] ?? 0,
+              unit: item.unit,
+            }))}
+          />
           {items.length === 0 ? (
             <p className="text-sm text-neutral-500">No hay insumos todavía.</p>
           ) : (

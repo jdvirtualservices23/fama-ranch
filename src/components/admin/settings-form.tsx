@@ -86,27 +86,6 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         </CardContent>
       </Card>
 
-      <Card className="border-neutral-800 bg-neutral-900 text-neutral-50">
-        <CardHeader>
-          <CardTitle>Datos de Zelle</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="zelle_email">Correo</Label>
-            <Input
-              id="zelle_email"
-              name="zelle_email"
-              type="email"
-              defaultValue={settings.zelle_email ?? ''}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="zelle_name">Nombre del titular</Label>
-            <Input id="zelle_name" name="zelle_name" defaultValue={settings.zelle_name ?? ''} />
-          </div>
-        </CardContent>
-      </Card>
-
       {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
       <Button type="submit" disabled={pending}>
         {pending ? 'Guardando...' : 'Guardar configuración'}
