@@ -90,6 +90,20 @@ function ProductDialog({
             </div>
           </div>
           <div className="space-y-2">
+            <Label htmlFor="xl_upgrade_price">
+              Costo adicional versión XL (opcional, USD)
+            </Label>
+            <Input
+              id="xl_upgrade_price"
+              name="xl_upgrade_price"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="Deja vacío si no aplica"
+              defaultValue={product?.xl_upgrade_price ?? ''}
+            />
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="category_id">Categoría</Label>
             <Select name="category_id" defaultValue={product?.category_id}>
               <SelectTrigger id="category_id" className="w-full">

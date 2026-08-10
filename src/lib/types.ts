@@ -3,6 +3,8 @@ export type Category = {
   name: string
   order: number
   created_at: string
+  /** Si es true, no se muestra como sección propia del menú — solo sirve como pool de opciones (ej. Contornos). */
+  is_choice_pool: boolean
 }
 
 export type Product = {
@@ -18,6 +20,8 @@ export type Product = {
   /** Cuántos productos de `choice_category_id` debe elegir el cliente (0 = no aplica, ej. combos). */
   choice_count: number
   choice_category_id: string | null
+  /** Costo adicional si el cliente elige la versión XL (null = no tiene versión XL). */
+  xl_upgrade_price: number | null
 }
 
 export type OrderStatus = 'pendiente' | 'en_proceso' | 'completado' | 'cancelado'

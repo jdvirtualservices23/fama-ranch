@@ -9,19 +9,20 @@ export default async function HomePage() {
   ])
 
   const productsByCategory = new Map(sections.map((s) => [s.category.id, s.products]))
+  const visibleSections = sections.filter((s) => !s.category.is_choice_pool)
 
   return (
     <div className="flex min-h-screen flex-col bg-brand-bg text-neutral-50">
       <SiteHeader bcvRate={settings.bcv_rate} />
 
       <main className="mx-auto w-full max-w-3xl flex-1 space-y-8 px-4 py-6">
-        {sections.every((s) => s.products.length === 0) && (
+        {visibleSections.every((s) => s.products.length === 0) && (
           <p className="py-16 text-center text-neutral-500">
             El menú está en preparación. Vuelve pronto.
           </p>
         )}
 
-        {sections.map(
+        {visibleSections.map(
           ({ category, products }) =>
             products.length > 0 && (
               <section key={category.id}>

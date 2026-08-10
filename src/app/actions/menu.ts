@@ -10,6 +10,10 @@ export type ActionState = { error?: string } | undefined
 const categorySchema = z.object({
   name: z.string().trim().min(1, { error: 'El nombre es obligatorio.' }),
   order: z.coerce.number().int().default(0),
+  is_choice_pool: z
+    .any()
+    .optional()
+    .transform((v) => v === 'true' || v === true),
 })
 
 export async function createCategory(
@@ -20,6 +24,7 @@ export async function createCategory(
   const parsed = categorySchema.safeParse({
     name: formData.get('name'),
     order: formData.get('order') || 0,
+    is_choice_pool: formData.get('is_choice_pool'),
   })
   if (!parsed.success) return { error: parsed.error.issues[0]?.message }
 
@@ -28,6 +33,7 @@ export async function createCategory(
   if (error) return { error: error.message }
 
   revalidatePath('/admin/menu')
+  revalidatePath('/')
 }
 
 export async function updateCategory(
@@ -41,6 +47,7 @@ export async function updateCategory(
   const parsed = categorySchema.safeParse({
     name: formData.get('name'),
     order: formData.get('order') || 0,
+    is_choice_pool: formData.get('is_choice_pool'),
   })
   if (!parsed.success) return { error: parsed.error.issues[0]?.message }
 
@@ -67,6 +74,7 @@ const productSchema = z.object({
   order: z.coerce.number().int().default(0),
   choice_count: z.coerce.number().int().min(0).default(0),
   choice_category_id: z.string().trim().optional(),
+  xl_upgrade_price: z.coerce.number().min(0).optional(),
 })
 
 export async function createProduct(
@@ -82,15 +90,17 @@ export async function createProduct(
     order: formData.get('order') || 0,
     choice_count: formData.get('choice_count') || 0,
     choice_category_id: formData.get('choice_category_id') || undefined,
+    xl_upgrade_price: formData.get('xl_upgrade_price') || undefined,
   })
   if (!parsed.success) return { error: parsed.error.issues[0]?.message }
 
-  const { choice_category_id, choice_count, ...rest } = parsed.data
+  const { choice_category_id, choice_count, xl_upgrade_price, ...rest } = parsed.data
   const supabase = await createClient()
   const { error } = await supabase.from('products').insert({
     ...rest,
     choice_count: choice_category_id ? choice_count : 0,
     choice_category_id: choice_category_id || null,
+    xl_upgrade_price: xl_upgrade_price ?? null,
     is_available: true,
   })
   if (error) return { error: error.message }
@@ -114,10 +124,11 @@ export async function updateProduct(
     order: formData.get('order') || 0,
     choice_count: formData.get('choice_count') || 0,
     choice_category_id: formData.get('choice_category_id') || undefined,
+    xl_upgrade_price: formData.get('xl_upgrade_price') || undefined,
   })
   if (!parsed.success) return { error: parsed.error.issues[0]?.message }
 
-  const { choice_category_id, choice_count, ...rest } = parsed.data
+  const { choice_category_id, choice_count, xl_upgrade_price, ...rest } = parsed.data
   const supabase = await createClient()
   const { error } = await supabase
     .from('products')
@@ -125,6 +136,7 @@ export async function updateProduct(
       ...rest,
       choice_count: choice_category_id ? choice_count : 0,
       choice_category_id: choice_category_id || null,
+      xl_upgrade_price: xl_upgrade_price ?? null,
     })
     .eq('id', id)
   if (error) return { error: error.message }

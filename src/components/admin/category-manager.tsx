@@ -57,6 +57,16 @@ function CategoryDialog({
               defaultValue={category?.order ?? 0}
             />
           </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="is_choice_pool"
+              value="true"
+              defaultChecked={category?.is_choice_pool}
+              className="size-4 rounded border-neutral-700"
+            />
+            Solo es una lista de opciones (ej. Contornos) — no se muestra como sección del menú
+          </label>
           {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
           <DialogFooter>
             <Button type="submit" disabled={pending}>

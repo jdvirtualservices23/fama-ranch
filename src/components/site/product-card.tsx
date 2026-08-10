@@ -3,6 +3,7 @@
 import { useCart } from '@/lib/cart-context'
 import { Button } from '@/components/ui/button'
 import { ComboPickerDialog } from '@/components/site/combo-picker-dialog'
+import { XlUpgradeDialog } from '@/components/site/xl-upgrade-dialog'
 import { formatBs, formatUsd, usdToBs } from '@/lib/format'
 import { Plus } from 'lucide-react'
 import type { Product } from '@/lib/types'
@@ -19,6 +20,7 @@ export function ProductCard({
 }) {
   const { addItem } = useCart()
   const requiresChoice = product.choice_count > 0 && choiceOptions.length > 0
+  const hasXlUpgrade = !requiresChoice && product.xl_upgrade_price != null
 
   return (
     <div className="flex items-start justify-between gap-4 rounded-lg border border-neutral-800 bg-brand-card p-4">
@@ -44,6 +46,19 @@ export function ProductCard({
               className="shrink-0 rounded-full bg-brand-gold text-black hover:bg-brand-gold/90"
             >
               Elegir
+            </Button>
+          }
+        />
+      ) : hasXlUpgrade ? (
+        <XlUpgradeDialog
+          product={product as Product & { xl_upgrade_price: number }}
+          trigger={
+            <Button
+              size="icon"
+              className="shrink-0 rounded-full bg-brand-gold text-black hover:bg-brand-gold/90"
+              aria-label={`Agregar ${product.name}`}
+            >
+              <Plus className="size-4" />
             </Button>
           }
         />
