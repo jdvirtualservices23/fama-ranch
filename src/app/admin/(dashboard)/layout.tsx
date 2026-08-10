@@ -21,19 +21,19 @@ export default async function AdminDashboardLayout({
 
   return (
     <div className="dark min-h-screen bg-neutral-950 text-neutral-50">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-800 px-6 py-4">
-        <div className="flex items-center gap-6">
+      <header className="border-b border-neutral-800">
+        <div className="flex items-center justify-between gap-4 px-6 py-4">
           <div>
             <p className="text-xs uppercase tracking-wide text-neutral-500">Fama Ranch</p>
             <p className="font-semibold">Panel de administración</p>
           </div>
-          <AdminNavLinks />
+          <form action={logout}>
+            <Button variant="outline" size="sm" type="submit">
+              Cerrar sesión
+            </Button>
+          </form>
         </div>
-        <form action={logout}>
-          <Button variant="outline" size="sm" type="submit">
-            Cerrar sesión
-          </Button>
-        </form>
+        <AdminNavLinks />
       </header>
       <main className="p-6">{children}</main>
       <Toaster theme="dark" />

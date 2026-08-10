@@ -45,8 +45,9 @@ export function InventoryStockChart({ data }: { data: StockBar[] }) {
               background: '#141414',
               border: '1px solid #262626',
               borderRadius: 8,
-              color: '#fafafa',
             }}
+            labelStyle={{ color: '#fafafa' }}
+            itemStyle={{ color: '#ffcc00' }}
             formatter={(value, _name, item) => [
               `${value} ${(item.payload as StockBar).unit}`,
               'Existencia',

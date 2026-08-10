@@ -46,8 +46,9 @@ export function ProductSalesChart({ data }: { data: ProductSales[] }) {
               background: '#141414',
               border: '1px solid #262626',
               borderRadius: 8,
-              color: '#fafafa',
             }}
+            labelStyle={{ color: '#fafafa' }}
+            itemStyle={{ color: '#ffcc00' }}
             formatter={(value) => [value, 'Unidades vendidas']}
           />
           <Bar dataKey="quantity" fill="#ffcc00" radius={[0, 4, 4, 0]} />
