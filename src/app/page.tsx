@@ -8,6 +8,8 @@ export default async function HomePage() {
     getSettings(),
   ])
 
+  const productsByCategory = new Map(sections.map((s) => [s.category.id, s.products]))
+
   return (
     <div className="flex min-h-screen flex-col bg-brand-bg text-neutral-50">
       <SiteHeader bcvRate={settings.bcv_rate} />
@@ -26,7 +28,16 @@ export default async function HomePage() {
                 <h2 className="mb-3 text-lg font-bold text-brand-gold">{category.name}</h2>
                 <div className="space-y-3">
                   {products.map((product) => (
-                    <ProductCard key={product.id} product={product} bcvRate={settings.bcv_rate} />
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      bcvRate={settings.bcv_rate}
+                      choiceOptions={
+                        product.choice_category_id
+                          ? (productsByCategory.get(product.choice_category_id) ?? [])
+                          : []
+                      }
+                    />
                   ))}
                 </div>
               </section>

@@ -17,7 +17,7 @@ export function LoginForm() {
   const [state, action, pending] = useActionState<LoginState, FormData>(login, undefined)
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-950 p-4">
+    <div className="dark flex min-h-screen items-center justify-center bg-neutral-950 p-4">
       <Card className="w-full max-w-sm border-neutral-800 bg-neutral-900 text-neutral-50">
         <CardHeader>
           <CardTitle>Fama Ranch — Admin</CardTitle>

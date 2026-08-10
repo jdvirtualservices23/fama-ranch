@@ -80,9 +80,14 @@ export function OrdersTable({
                 )}
               </TableCell>
               <TableCell className="max-w-[220px] text-sm text-neutral-400">
-                {(itemsByOrder[order.id] ?? [])
-                  .map((item) => `${item.quantity}x ${item.product_name}`)
-                  .join(', ')}
+                {(itemsByOrder[order.id] ?? []).map((item) => (
+                  <div key={item.id}>
+                    {item.quantity}x {item.product_name}
+                    {item.selection_note && (
+                      <span className="text-neutral-500"> ({item.selection_note})</span>
+                    )}
+                  </div>
+                ))}
               </TableCell>
               <TableCell>
                 <p className="text-sm">{DELIVERY_METHOD_LABELS[order.delivery_method]}</p>

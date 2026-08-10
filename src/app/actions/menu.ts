@@ -65,6 +65,8 @@ const productSchema = z.object({
   price_usd: z.coerce.number().min(0, { error: 'El precio debe ser mayor o igual a 0.' }),
   category_id: z.string().trim().min(1, { error: 'Selecciona una categoría.' }),
   order: z.coerce.number().int().default(0),
+  choice_count: z.coerce.number().int().min(0).default(0),
+  choice_category_id: z.string().trim().optional(),
 })
 
 export async function createProduct(
@@ -78,13 +80,19 @@ export async function createProduct(
     price_usd: formData.get('price_usd'),
     category_id: formData.get('category_id'),
     order: formData.get('order') || 0,
+    choice_count: formData.get('choice_count') || 0,
+    choice_category_id: formData.get('choice_category_id') || undefined,
   })
   if (!parsed.success) return { error: parsed.error.issues[0]?.message }
 
+  const { choice_category_id, choice_count, ...rest } = parsed.data
   const supabase = await createClient()
-  const { error } = await supabase
-    .from('products')
-    .insert({ ...parsed.data, is_available: true })
+  const { error } = await supabase.from('products').insert({
+    ...rest,
+    choice_count: choice_category_id ? choice_count : 0,
+    choice_category_id: choice_category_id || null,
+    is_available: true,
+  })
   if (error) return { error: error.message }
 
   revalidatePath('/admin/menu')
@@ -104,11 +112,21 @@ export async function updateProduct(
     price_usd: formData.get('price_usd'),
     category_id: formData.get('category_id'),
     order: formData.get('order') || 0,
+    choice_count: formData.get('choice_count') || 0,
+    choice_category_id: formData.get('choice_category_id') || undefined,
   })
   if (!parsed.success) return { error: parsed.error.issues[0]?.message }
 
+  const { choice_category_id, choice_count, ...rest } = parsed.data
   const supabase = await createClient()
-  const { error } = await supabase.from('products').update(parsed.data).eq('id', id)
+  const { error } = await supabase
+    .from('products')
+    .update({
+      ...rest,
+      choice_count: choice_category_id ? choice_count : 0,
+      choice_category_id: choice_category_id || null,
+    })
+    .eq('id', id)
   if (error) return { error: error.message }
 
   revalidatePath('/admin/menu')

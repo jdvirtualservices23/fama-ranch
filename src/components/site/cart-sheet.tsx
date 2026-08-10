@@ -49,11 +49,14 @@ export function CartSheet({ bcvRate }: { bcvRate: number }) {
           )}
           {items.map((item) => (
             <div
-              key={item.productId}
+              key={item.cartItemId}
               className="flex items-center justify-between gap-3 rounded-md border border-neutral-800 p-3"
             >
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium">{item.name}</p>
+                {item.selectionNote && (
+                  <p className="truncate text-xs text-neutral-400">{item.selectionNote}</p>
+                )}
                 <p className="text-xs text-neutral-500">{formatUsd(item.priceUsd)} c/u</p>
               </div>
               <div className="flex items-center gap-1.5">
@@ -61,7 +64,7 @@ export function CartSheet({ bcvRate }: { bcvRate: number }) {
                   size="icon"
                   variant="ghost"
                   className="size-7"
-                  onClick={() => setQuantity(item.productId, item.quantity - 1)}
+                  onClick={() => setQuantity(item.cartItemId, item.quantity - 1)}
                 >
                   <Minus className="size-3.5" />
                 </Button>
@@ -70,7 +73,7 @@ export function CartSheet({ bcvRate }: { bcvRate: number }) {
                   size="icon"
                   variant="ghost"
                   className="size-7"
-                  onClick={() => setQuantity(item.productId, item.quantity + 1)}
+                  onClick={() => setQuantity(item.cartItemId, item.quantity + 1)}
                 >
                   <Plus className="size-3.5" />
                 </Button>
@@ -78,7 +81,7 @@ export function CartSheet({ bcvRate }: { bcvRate: number }) {
                   size="icon"
                   variant="ghost"
                   className="size-7 text-brand-red hover:text-brand-red"
-                  onClick={() => removeItem(item.productId)}
+                  onClick={() => removeItem(item.cartItemId)}
                 >
                   <Trash2 className="size-3.5" />
                 </Button>

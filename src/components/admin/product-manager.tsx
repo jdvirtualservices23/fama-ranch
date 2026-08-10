@@ -44,6 +44,7 @@ function ProductDialog({
   trigger: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
+  const [choiceCategoryId, setChoiceCategoryId] = useState(product?.choice_category_id ?? '')
   const action = product ? updateProduct : createProduct
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, undefined)
 
@@ -102,6 +103,41 @@ function ProductDialog({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="space-y-2 rounded-md border border-neutral-800 p-3">
+            <Label htmlFor="choice_category_id">
+              ¿Este producto requiere elegir sabores? (opcional, ej. combos)
+            </Label>
+            <Select
+              value={choiceCategoryId || 'none'}
+              onValueChange={(v) => setChoiceCategoryId(v === 'none' ? '' : v)}
+            >
+              <SelectTrigger id="choice_category_id" className="w-full">
+                <SelectValue placeholder="Ninguna" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Ninguna</SelectItem>
+                {categories.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <input type="hidden" name="choice_category_id" value={choiceCategoryId} />
+            {choiceCategoryId && (
+              <div className="space-y-2 pt-1">
+                <Label htmlFor="choice_count">Cuántos debe elegir el cliente</Label>
+                <Input
+                  id="choice_count"
+                  name="choice_count"
+                  type="number"
+                  min="1"
+                  defaultValue={product?.choice_count || 1}
+                  required
+                />
+              </div>
+            )}
           </div>
           {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
           <DialogFooter>
@@ -175,6 +211,7 @@ export function ProductManager({
                 <Switch
                   checked={product.is_available}
                   onCheckedChange={() => handleToggle(product)}
+                  className="data-checked:bg-green-600 data-unchecked:bg-red-500"
                 />
                 <ProductDialog
                   product={product}

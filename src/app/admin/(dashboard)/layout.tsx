@@ -20,7 +20,7 @@ export default async function AdminDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-50">
+    <div className="dark min-h-screen bg-neutral-950 text-neutral-50">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-800 px-6 py-4">
         <div className="flex items-center gap-6">
           <div>

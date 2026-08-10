@@ -3,17 +3,28 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 export type CartItem = {
+  /** Identifica una línea única del carrito: mismo producto con distinta selección de sabores no se combinan. */
+  cartItemId: string
   productId: string
   name: string
   priceUsd: number
   quantity: number
+  /** Ej. "2x Pollo, 1x Queso" para combos que exigen elegir sabores. */
+  selectionNote?: string
+}
+
+type NewCartItem = {
+  productId: string
+  name: string
+  priceUsd: number
+  selectionNote?: string
 }
 
 type CartContextValue = {
   items: CartItem[]
-  addItem: (item: Omit<CartItem, 'quantity'>) => void
-  removeItem: (productId: string) => void
-  setQuantity: (productId: string, quantity: number) => void
+  addItem: (item: NewCartItem) => void
+  removeItem: (cartItemId: string) => void
+  setQuantity: (cartItemId: string, quantity: number) => void
   clear: () => void
   totalUsd: number
   totalItems: number
@@ -22,6 +33,10 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null)
 const STORAGE_KEY = 'fama-ranch-cart'
+
+function makeCartItemId(productId: string, selectionNote?: string) {
+  return selectionNote ? `${productId}::${selectionNote}` : productId
+}
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
@@ -42,26 +57,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
   }, [items, hydrated])
 
-  const addItem = useCallback((item: Omit<CartItem, 'quantity'>) => {
+  const addItem = useCallback((item: NewCartItem) => {
+    const cartItemId = makeCartItemId(item.productId, item.selectionNote)
     setItems((prev) => {
-      const existing = prev.find((i) => i.productId === item.productId)
+      const existing = prev.find((i) => i.cartItemId === cartItemId)
       if (existing) {
         return prev.map((i) =>
-          i.productId === item.productId ? { ...i, quantity: i.quantity + 1 } : i
+          i.cartItemId === cartItemId ? { ...i, quantity: i.quantity + 1 } : i
         )
       }
-      return [...prev, { ...item, quantity: 1 }]
+      return [...prev, { ...item, cartItemId, quantity: 1 }]
     })
   }, [])
 
-  const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((i) => i.productId !== productId))
+  const removeItem = useCallback((cartItemId: string) => {
+    setItems((prev) => prev.filter((i) => i.cartItemId !== cartItemId))
   }, [])
 
-  const setQuantity = useCallback((productId: string, quantity: number) => {
+  const setQuantity = useCallback((cartItemId: string, quantity: number) => {
     setItems((prev) => {
-      if (quantity <= 0) return prev.filter((i) => i.productId !== productId)
-      return prev.map((i) => (i.productId === productId ? { ...i, quantity } : i))
+      if (quantity <= 0) return prev.filter((i) => i.cartItemId !== cartItemId)
+      return prev.map((i) => (i.cartItemId === cartItemId ? { ...i, quantity } : i))
     })
   }, [])
 

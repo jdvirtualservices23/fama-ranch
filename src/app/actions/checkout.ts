@@ -10,6 +10,7 @@ const cartItemSchema = z.object({
   name: z.string().min(1),
   priceUsd: z.number().nonnegative(),
   quantity: z.number().int().positive(),
+  selectionNote: z.string().trim().optional(),
 })
 
 const checkoutSchema = z.object({
@@ -61,6 +62,7 @@ export async function createOrder(input: CheckoutInput): Promise<CreateOrderResu
       name: item.name,
       priceUsd: item.priceUsd,
       quantity: item.quantity,
+      selectionNote: item.selectionNote || null,
     })),
   })
 
@@ -81,7 +83,7 @@ function buildWhatsappMessage(order: {
   address?: string
   paymentMethod: 'pago_movil' | 'efectivo' | 'zelle'
   paymentReference?: string
-  items: { name: string; quantity: number; priceUsd: number }[]
+  items: { name: string; quantity: number; priceUsd: number; selectionNote?: string }[]
   totalUsd: number
   totalBs: number
 }) {
@@ -91,7 +93,9 @@ function buildWhatsappMessage(order: {
     '',
     '*Items:*',
     ...order.items.map(
-      (i) => `- ${i.quantity}x ${i.name} ($${(i.priceUsd * i.quantity).toFixed(2)})`
+      (i) =>
+        `- ${i.quantity}x ${i.name} ($${(i.priceUsd * i.quantity).toFixed(2)})` +
+        (i.selectionNote ? `\n  (${i.selectionNote})` : '')
     ),
     '',
     `Entrega: ${

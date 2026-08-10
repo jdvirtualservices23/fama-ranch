@@ -79,6 +79,7 @@ export function CheckoutForm({ settings }: { settings: Settings }) {
         name: i.name,
         priceUsd: i.priceUsd,
         quantity: i.quantity,
+        selectionNote: i.selectionNote,
       })),
     }
 
@@ -100,10 +101,15 @@ export function CheckoutForm({ settings }: { settings: Settings }) {
         <CardContent className="space-y-3 pt-6">
           <h2 className="font-semibold">Tu pedido</h2>
           {items.map((item) => (
-            <div key={item.productId} className="flex justify-between text-sm">
-              <span className="text-neutral-300">
-                {item.quantity}x {item.name}
-              </span>
+            <div key={item.cartItemId} className="flex justify-between text-sm">
+              <div>
+                <p className="text-neutral-300">
+                  {item.quantity}x {item.name}
+                </p>
+                {item.selectionNote && (
+                  <p className="text-xs text-neutral-500">{item.selectionNote}</p>
+                )}
+              </div>
               <span className="text-neutral-400">{formatUsd(item.priceUsd * item.quantity)}</span>
             </div>
           ))}

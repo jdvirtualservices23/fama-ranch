@@ -15,6 +15,9 @@ export type Product = {
   image_url: string | null
   order: number
   created_at: string
+  /** Cuántos productos de `choice_category_id` debe elegir el cliente (0 = no aplica, ej. combos). */
+  choice_count: number
+  choice_category_id: string | null
 }
 
 export type OrderStatus = 'pendiente' | 'en_proceso' | 'completado' | 'cancelado'
@@ -43,6 +46,7 @@ export type OrderItem = {
   product_name: string
   quantity: number
   unit_price_usd: number
+  selection_note: string | null
 }
 
 export type Settings = {
